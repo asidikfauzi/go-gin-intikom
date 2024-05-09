@@ -16,22 +16,23 @@ func NewUserPostgres(conn *gorm.DB) domain.UserPostgres {
 	}
 }
 
-func (u *User) GetAll(limit, offset int, orderBy, search string) (users []model.GetUser, count int64, err error) {
+func (u *User) GetAll(param model.ParamPaginate) (users []model.GetUser, count int64, err error) {
 
-	if err = u.DB.Model(&model.Users{}).
+	query := u.DB.Model(&model.Users{}).
 		Where("deleted_at IS NULL").
-		Where("(id ILIKE ? OR name ILIKE ? OR email ILIKE ?)", "%"+search+"%", "%"+search+"%", "%"+search+"%").
-		Limit(limit).
-		Offset(offset).
-		Order(orderBy).
+		Where("(name ILIKE ? OR email ILIKE ?)", "%"+param.Search+"%", "%"+param.Search+"%")
+
+	if param.Limit > 0 {
+		query = query.Limit(param.Limit)
+	}
+
+	if err = query.Offset(param.Offset).
+		Order(param.OrderBy + " " + param.Direction).
 		Find(&users).Error; err != nil {
 		return
 	}
 
-	if err = u.DB.Model(&model.Users{}).
-		Where("deleted_at IS NULL").
-		Where("(id ILIKE ? OR name ILIKE ? OR email ILIKE ?)", "%"+search+"%", "%"+search+"%", "%"+search+"%").
-		Count(&count).Error; err != nil {
+	if err = query.Count(&count).Error; err != nil {
 		return
 	}
 

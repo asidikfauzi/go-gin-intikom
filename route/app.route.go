@@ -2,7 +2,9 @@ package route
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/middleware"
 	"asidikfauzi/go-gin-intikom/controller/auth"
+	"asidikfauzi/go-gin-intikom/controller/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,11 +14,13 @@ type InitRoutes interface {
 
 type RouteService struct {
 	AuthController auth.AuthController `inject:"auth_controller"`
+	UserController user.UserController `inject:"user_controller"`
 }
 
 func InitPackage() *RouteService {
 	return &RouteService{
 		AuthController: &auth.AuthDomain{},
+		UserController: &user.UserDomain{},
 	}
 }
 
@@ -31,6 +35,12 @@ func (r *RouteService) InitRouter() {
 			{
 				auth.POST("/login", r.AuthController.Login)
 				auth.POST("/register", r.AuthController.Register)
+			}
+
+			users := prefix.Group("/users")
+			users.Use(middleware.JWTMiddleware())
+			{
+				users.GET("", r.UserController.GetUsers)
 			}
 		}
 

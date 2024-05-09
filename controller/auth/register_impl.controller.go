@@ -4,7 +4,6 @@ import (
 	"asidikfauzi/go-gin-intikom/common/helper"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"net/http"
@@ -42,9 +41,6 @@ func (a *AuthDomain) Register(c *gin.Context) {
 	if err != nil {
 		return
 	}
-
-	fmt.Println(res)
-	fmt.Println(err)
 
 	helper.ResponseAPI(c, true, http.StatusCreated, http.StatusText(http.StatusCreated), map[string]interface{}{helper.Success: res}, startTime)
 	return

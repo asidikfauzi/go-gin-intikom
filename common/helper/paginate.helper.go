@@ -1,32 +1,12 @@
 package helper
 
-import (
-	"fmt"
-	"strconv"
-)
+func GetOffset(pageParam, limitParam int) int {
 
-func Pagination(pageParam, limitParam string) (int, int, int, error) {
-
-	if pageParam == "0" || pageParam == "" {
-		pageParam = "1"
-	}
-	if limitParam == "0" || limitParam == "" {
-		limitParam = "10"
+	if pageParam == 0 {
+		pageParam = 1
 	}
 
-	page, err := strconv.Atoi(pageParam)
-	if err != nil {
-		err = fmt.Errorf("invalid value for 'page': %s", err.Error())
-		return 0, 0, 0, err
-	}
+	offset := (pageParam - 1) * limitParam
 
-	limit, err := strconv.Atoi(limitParam)
-	if err != nil {
-		err = fmt.Errorf("invalid value for 'limit': %s", err.Error())
-		return 0, 0, 0, err
-	}
-
-	offset := (page - 1) * limit
-
-	return page, limit, offset, nil
+	return offset
 }

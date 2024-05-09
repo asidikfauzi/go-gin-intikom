@@ -20,19 +20,22 @@ func DependencyInjection(liq InjectData) {
 	}
 
 	// POSTGRES
-	authPostgres := postgres.NewUserPostgres(db)
+	userPostgres := postgres.NewUserPostgres(db)
 
 	// SERVICES
-	authService := service.NewAuthService(authPostgres)
+	authService := service.NewAuthService(userPostgres)
+	userService := service.NewUserService(userPostgres)
 
 	dependencies := []*inject.Object{
 		{Value: authService, Name: "auth_service"},
+		{Value: userService, Name: "user_service"},
 	}
 
 	if liq.Routes != nil {
 		dependencies = append(dependencies,
 			&inject.Object{Value: liq.Routes, Name: "routes"},
 			&inject.Object{Value: liq.Routes.AuthController, Name: "auth_controller"},
+			&inject.Object{Value: liq.Routes.UserController, Name: "user_controller"},
 		)
 	}
 
