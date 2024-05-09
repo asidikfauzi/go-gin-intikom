@@ -27,5 +27,6 @@ type (
 		GetUsers(c *gin.Context, param model.ParamPaginate, startTime time.Time) (users []model.GetUser, paginate model.ResponsePaginate, err error)
 		ShowUser(c *gin.Context, id int, startTime time.Time) (user model.GetUser, err error)
 		UpdateUser(c *gin.Context, id int, startTime time.Time) (message string, err error)
+		DeleteUser(c *gin.Context, id int, startTime time.Time) (message string, err error)
 	}
 )

@@ -94,6 +94,21 @@ func (u *UserDomain) UpdateUser(c *gin.Context) {
 	return
 }
 
-//func (u *UserDomain) DeleteUser(c *gin.Context) {
-//	startTime := time.Now()
-//}
+func (u *UserDomain) DeleteUser(c *gin.Context) {
+	startTime := time.Now()
+	paramId := c.Param("id")
+
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		return
+	}
+
+	res, err := u.UserService.DeleteUser(c, id, startTime)
+	if err != nil {
+		return
+	}
+
+	helper.ResponseAPI(c, true, http.StatusOK, http.StatusText(http.StatusOK), map[string]interface{}{helper.Success: res}, startTime)
+	return
+}

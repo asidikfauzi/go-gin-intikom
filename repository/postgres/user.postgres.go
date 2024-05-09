@@ -91,7 +91,8 @@ func (u *User) Create(user *model.Users) error {
 }
 
 func (u *User) Update(user model.Users) error {
-	query := u.DB.Model(&model.Users{}).Where("id = ?", user.ID)
+	query := u.DB.Model(&model.Users{}).
+		Where("id = ?", user.ID)
 
 	if user.Name != "" {
 		query = query.UpdateColumn("name", user.Name)
@@ -115,7 +116,9 @@ func (u *User) Update(user model.Users) error {
 }
 
 func (u *User) Delete(user model.Users) error {
-	if err := u.DB.Where("id = ?", user.ID).UpdateColumn("deleted_at", user.DeletedAt).Error; err != nil {
+	if err := u.DB.Model(&model.Users{}).
+		Where("id = ?", user.ID).
+		UpdateColumn("deleted_at", user.DeletedAt).Error; err != nil {
 		return err
 	}
 

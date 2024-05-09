@@ -5,7 +5,6 @@ import (
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
@@ -129,8 +128,6 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 	user.ID = getUser.ID
 	user.UpdatedAt = &timeNow
 
-	fmt.Println(user)
-
 	err = s.userPg.Update(user)
 	if err != nil {
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
@@ -138,4 +135,28 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 	}
 
 	return helper.SuccessUpdatedData, nil
+}
+
+func (s *UserService) DeleteUser(c *gin.Context, id int, startTime time.Time) (message string, err error) {
+	var (
+		user model.Users
+	)
+
+	getUser, err := s.userPg.FindById(id)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		return
+	}
+
+	timeNow := time.Now()
+	user.ID = getUser.ID
+	user.DeletedAt = &timeNow
+
+	err = s.userPg.Delete(user)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		return
+	}
+
+	return helper.SuccessDeletedData, nil
 }
