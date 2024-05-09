@@ -6,11 +6,11 @@ import (
 )
 
 type Header struct {
-	ProcessTime float64  `json:"process_time"`
-	Status      bool     `json:"status"`
-	StatusCode  int      `json:"status_code"`
-	Reason      string   `json:"reason"`
-	Messages    []string `json:"messages"`
+	ProcessTime float64                `json:"process_time"`
+	Status      bool                   `json:"status"`
+	StatusCode  int                    `json:"status_code"`
+	Reason      string                 `json:"reason"`
+	Messages    map[string]interface{} `json:"messages"`
 }
 
 type Response struct {
@@ -26,7 +26,7 @@ type Paginate struct {
 	TotalData  int64 `json:"total_data"`
 }
 
-func NewResponse(status bool, code int, reason string, message []string, data interface{}, paginate *Paginate, startTime time.Time) Response {
+func NewResponse(status bool, code int, reason string, message map[string]interface{}, data interface{}, paginate *Paginate, startTime time.Time) Response {
 	return Response{
 		Header: Header{
 			ProcessTime: float64(time.Since(startTime).Seconds()),
@@ -40,17 +40,19 @@ func NewResponse(status bool, code int, reason string, message []string, data in
 	}
 }
 
-func ResponseAPI(c *gin.Context, status bool, code int, reason string, message []string, startTime time.Time) {
+func ResponseAPI(c *gin.Context, status bool, code int, reason string, message map[string]interface{}, startTime time.Time) {
 	response := NewResponse(status, code, reason, message, nil, nil, startTime)
+
 	c.JSON(code, response)
 }
 
-func ResponseDataAPI(c *gin.Context, status bool, code int, reason string, message []string, data interface{}, startTime time.Time) {
+func ResponseDataAPI(c *gin.Context, status bool, code int, reason string, message map[string]interface{}, data interface{}, startTime time.Time) {
 	response := NewResponse(status, code, reason, message, data, nil, startTime)
+
 	c.JSON(code, response)
 }
 
-func ResponseDataPaginationAPI(c *gin.Context, status bool, code int, reason string, message []string, data interface{}, paginate Paginate, startTime time.Time) {
+func ResponseDataPaginationAPI(c *gin.Context, status bool, code int, reason string, message map[string]interface{}, data interface{}, paginate Paginate, startTime time.Time) {
 	response := NewResponse(status, code, reason, message, data, &paginate, startTime)
 
 	c.JSON(code, response)
