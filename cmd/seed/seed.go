@@ -27,14 +27,14 @@ func InitMoviesSeed(db *gorm.DB) {
 		panic("Error hash password: " + err.Error())
 	}
 
-	user := model.User{
+	user := model.Users{
 		Name:      "Ach Sidik Fauzi",
 		Email:     "asidikfauzi@gmail.com",
 		Password:  string(hashPassword),
 		CreatedAt: time.Now(),
 	}
 
-	var existingUser model.User
+	var existingUser model.Users
 	if err = db.Where("email = ?", user.Email).First(&existingUser).Error; err != nil {
 		if !errors.Is(err, gorm.ErrRecordNotFound) {
 			panic("Error while querying user: " + err.Error())
