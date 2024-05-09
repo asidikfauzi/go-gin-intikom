@@ -3,6 +3,7 @@ package auth
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
 	"asidikfauzi/go-gin-intikom/model"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	_ "github.com/go-playground/validator/v10"
@@ -14,19 +15,22 @@ import (
 func (a *AuthDomain) Login(c *gin.Context) {
 	startTime := time.Now()
 
-	var req model.ReqLogin
+	var (
+		req model.ReqLogin
+		ve  validator.ValidationErrors
+	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		if vErrors, ok := err.(validator.ValidationErrors); ok {
-			errors := make(map[string]string)
-			for i, vError := range vErrors {
+		if errors.As(err, &ve) {
+			out := make(map[string]string, len(ve))
+			for i, fe := range ve {
 				field := reflect.TypeOf(req).Field(i).Tag.Get("json")
-				errors[field] = vError.Tag()
+				out[field] = helper.ValidateTag(fe)
 			}
-			helper.ResponseAPI(c, false, http.StatusUnprocessableEntity, http.StatusText(http.StatusUnprocessableEntity), map[string]interface{}{helper.Error: errors}, startTime)
+			helper.ResponseAPI(c, false, http.StatusUnprocessableEntity, http.StatusText(http.StatusUnprocessableEntity), map[string]interface{}{helper.Error: out}, startTime)
 			return
 		}
-		helper.ResponseAPI(c, false, http.StatusUnprocessableEntity, http.StatusText(http.StatusUnprocessableEntity), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
 
