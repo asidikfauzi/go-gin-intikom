@@ -30,6 +30,7 @@ func (r *RouteService) InitRouter() {
 			auth := prefix.Group("/auth")
 			{
 				auth.POST("/login", r.AuthController.Login)
+				auth.POST("/register", r.AuthController.Register)
 			}
 		}
 

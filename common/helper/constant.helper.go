@@ -17,4 +17,5 @@ const (
 	Unauthorized        = "Unauthorized"
 	UnauthorizedInvalid = "Unauthorized, Validation Invalid"
 	UnauthorizedExpired = "Unauthorized, Token Expired"
+	AlreadyExists       = "%s already exists"
 )

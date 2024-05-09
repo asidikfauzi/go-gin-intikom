@@ -60,3 +60,19 @@ func (u *User) FindByEmail(email string) (user model.Users, err error) {
 
 	return
 }
+
+func (u *User) EmailExists(email string) bool {
+	var user model.Users
+	if err := u.DB.Model(&model.Users{}).
+		Where("deleted_at IS NULL").
+		Where("email = ?", email).
+		First(&user).Error; err != nil {
+		return false
+	}
+
+	return true
+}
+
+func (u *User) Create(user *model.Users) error {
+	return u.DB.Create(user).Error
+}

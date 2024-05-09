@@ -7,7 +7,7 @@ import (
 
 type AuthController interface {
 	Login(c *gin.Context)
-	//Register(c *gin.Context)
+	Register(c *gin.Context)
 }
 
 type AuthDomain struct {

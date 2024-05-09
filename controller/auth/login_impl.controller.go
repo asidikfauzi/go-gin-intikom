@@ -39,6 +39,6 @@ func (a *AuthDomain) Login(c *gin.Context) {
 		return
 	}
 
-	helper.ResponseDataAPI(c, true, http.StatusOK, http.StatusText(http.StatusOK), map[string]interface{}{"success": helper.SuccessLogin}, token, startTime)
+	helper.ResponseDataAPI(c, true, http.StatusOK, http.StatusText(http.StatusOK), map[string]interface{}{helper.Success: helper.SuccessLogin}, token, startTime)
 	return
 }

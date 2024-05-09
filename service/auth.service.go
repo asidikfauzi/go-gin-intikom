@@ -5,6 +5,7 @@ import (
 	"asidikfauzi/go-gin-intikom/common/middleware"
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -55,4 +56,37 @@ func (s *AuthService) Login(c *gin.Context, req model.ReqLogin, startTime time.T
 	}
 
 	return
+}
+
+func (s *AuthService) Register(c *gin.Context, req model.ReqRegister, startTime time.Time) (message string, err error) {
+
+	existsUser := s.userPg.EmailExists(req.Email)
+	if existsUser {
+		err = fmt.Errorf(helper.AlreadyExists, "Email")
+		errMessage := make(map[string]string)
+		errMessage["email"] = err.Error()
+		helper.ResponseAPI(c, false, http.StatusConflict, http.StatusText(http.StatusConflict), map[string]interface{}{helper.Error: errMessage}, startTime)
+		return
+	}
+
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		return
+	}
+
+	user := model.Users{
+		Name:      req.Name,
+		Email:     req.Email,
+		Password:  string(hashPassword),
+		CreatedAt: time.Now(),
+	}
+
+	err = s.userPg.Create(&user)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
+		return
+	}
+
+	return helper.SuccessCreatedData, nil
 }
