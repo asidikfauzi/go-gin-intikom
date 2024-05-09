@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"assignment-movie/common/helper"
+	"asidikfauzi/go-gin-intikom/common/helper"
 	"fmt"
 	"reflect"
 	"strconv"
