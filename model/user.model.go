@@ -12,7 +12,7 @@ type (
 		CreatedAt time.Time  `gorm:"autoCreateTime"`
 		UpdatedAt *time.Time `gorm:"default:null"`
 		DeletedAt *time.Time `gorm:"default:null"`
-		Tasks     []Task     `gorm:"foreignKey:UserID"`
+		Tasks     []Tasks    `gorm:"foreignKey:UserID"`
 	}
 
 	ReqLogin struct {
@@ -21,9 +21,9 @@ type (
 	}
 
 	ReqUser struct {
-		Name            string `json:"name" binding:"required"`
-		Email           string `json:"email" binding:"required,email"`
-		Password        string `json:"password" binding:"required,min=8"`
+		Name            string `json:"name" binding:"required,max=255"`
+		Email           string `json:"email" binding:"required,email,max=255"`
+		Password        string `json:"password" binding:"required,min=8,max=255"`
 		ConfirmPassword string `json:"confirm_password" binding:"required"`
 		OldPassword     string `json:"old_password,omitempty"`
 	}

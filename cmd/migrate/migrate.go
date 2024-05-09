@@ -17,7 +17,7 @@ func main() {
 		panic("Error Migrate User")
 	}
 
-	err = database.DB.AutoMigrate(&model.Task{})
+	err = database.DB.AutoMigrate(&model.Tasks{})
 	if err != nil {
 		panic("Error Migrate Tas")
 	}
