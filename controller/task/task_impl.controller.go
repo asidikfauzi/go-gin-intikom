@@ -41,7 +41,7 @@ func (u *TaskDomain) GetTasks(c *gin.Context) {
 			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
 			return
 		}
-		queryParams.Page = limitInt
+		queryParams.Limit = limitInt
 	}
 	if orderBy := c.Query("orderBy"); orderBy != "" {
 		queryParams.OrderBy = orderBy
