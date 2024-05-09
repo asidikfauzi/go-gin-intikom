@@ -39,7 +39,7 @@ func (u *User) GetAll(param model.ParamPaginate) (users []model.GetUser, count i
 	return
 }
 
-func (u *User) FindById(id int) (user model.GetUser, err error) {
+func (u *User) FindById(id int) (user model.Users, err error) {
 
 	if err = u.DB.Model(&model.Users{}).
 		Where("deleted_at IS NULL").
@@ -62,6 +62,18 @@ func (u *User) FindByEmail(email string) (user model.Users, err error) {
 	return
 }
 
+func (u *User) IdExists(id int) bool {
+	var user model.Users
+	if err := u.DB.Model(&model.Users{}).
+		Where("deleted_at IS NULL").
+		Where("id = ?", id).
+		First(&user).Error; err != nil {
+		return false
+	}
+
+	return true
+}
+
 func (u *User) EmailExists(email string) bool {
 	var user model.Users
 	if err := u.DB.Model(&model.Users{}).
@@ -76,4 +88,36 @@ func (u *User) EmailExists(email string) bool {
 
 func (u *User) Create(user *model.Users) error {
 	return u.DB.Create(user).Error
+}
+
+func (u *User) Update(user model.Users) error {
+	query := u.DB.Model(&model.Users{}).Where("id = ?", user.ID)
+
+	if user.Name != "" {
+		query = query.UpdateColumn("name", user.Name)
+	}
+
+	if user.Email != "" {
+		query = query.UpdateColumn("email", user.Email)
+	}
+
+	if user.Password != "" {
+		query = query.UpdateColumn("password", user.Password)
+	}
+
+	query = query.UpdateColumn("updated_at", user.UpdatedAt)
+
+	if err := query.Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *User) Delete(user model.Users) error {
+	if err := u.DB.Where("id = ?", user.ID).UpdateColumn("deleted_at", user.DeletedAt).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

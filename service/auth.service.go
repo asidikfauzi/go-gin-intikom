@@ -58,7 +58,7 @@ func (s *AuthService) Login(c *gin.Context, req model.ReqLogin, startTime time.T
 	return
 }
 
-func (s *AuthService) Register(c *gin.Context, req model.ReqRegister, startTime time.Time) (message string, err error) {
+func (s *AuthService) Register(c *gin.Context, req model.ReqUser, startTime time.Time) (message string, err error) {
 
 	existsUser := s.userPg.EmailExists(req.Email)
 	if existsUser {

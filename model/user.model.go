@@ -20,16 +20,16 @@ type (
 		Password string `json:"password" binding:"required"`
 	}
 
-	ReqRegister struct {
-		Name            string    `json:"name" binding:"required"`
-		Email           string    `json:"email" binding:"required,email"`
-		Password        string    `json:"password" binding:"required,min=8"`
-		ConfirmPassword string    `json:"confirm_password" binding:"required"`
-		CreatedAt       time.Time `json:"created_at"`
+	ReqUser struct {
+		Name            string `json:"name" binding:"required"`
+		Email           string `json:"email" binding:"required,email"`
+		Password        string `json:"password" binding:"required,min=8"`
+		ConfirmPassword string `json:"confirm_password" binding:"required"`
+		OldPassword     string `json:"old_password,omitempty"`
 	}
 
 	GetUser struct {
-		ID    string `json:"id"`
+		ID    uint   `json:"id"`
 		Name  string `json:"name"`
 		Email string `json:"email"`
 	}

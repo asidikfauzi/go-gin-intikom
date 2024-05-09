@@ -15,7 +15,7 @@ func (a *AuthDomain) Register(c *gin.Context) {
 	startTime := time.Now()
 
 	var (
-		req model.ReqRegister
+		req model.ReqUser
 		ve  validator.ValidationErrors
 	)
 

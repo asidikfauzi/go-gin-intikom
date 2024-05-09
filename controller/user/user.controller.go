@@ -7,8 +7,8 @@ import (
 
 type UserController interface {
 	GetUsers(c *gin.Context)
-	//ShowUser(c *gin.Context)
-	//UpdateUser(c *gin.Context)
+	ShowUser(c *gin.Context)
+	UpdateUser(c *gin.Context)
 	//DeleteUser(c *gin.Context)
 }
 

@@ -41,6 +41,9 @@ func (r *RouteService) InitRouter() {
 			users.Use(middleware.JWTMiddleware())
 			{
 				users.GET("", r.UserController.GetUsers)
+				users.GET(":id", r.UserController.ShowUser)
+				users.PUT(":id", r.UserController.UpdateUser)
+				//users.DELETE(":id", r.UserController.DeleteUser)
 			}
 		}
 
