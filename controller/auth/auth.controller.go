@@ -8,6 +8,8 @@ import (
 type AuthController interface {
 	Login(c *gin.Context)
 	Register(c *gin.Context)
+	GoogleLogin(c *gin.Context)
+	GoogleCallback(c *gin.Context)
 }
 
 type AuthDomain struct {

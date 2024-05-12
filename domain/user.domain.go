@@ -21,6 +21,7 @@ type (
 	AuthService interface {
 		Login(c *gin.Context, req model.ReqLogin, startTime time.Time) (res string, err error)
 		Register(c *gin.Context, req model.ReqUser, startTime time.Time) (message string, err error)
+		LoginGoogle(c *gin.Context, req model.UserDataGoogle, startTime time.Time) (token string, err error)
 	}
 
 	UserService interface {

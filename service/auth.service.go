@@ -90,3 +90,50 @@ func (s *AuthService) Register(c *gin.Context, req model.ReqUser, startTime time
 
 	return helper.SuccessCreatedData, nil
 }
+
+func (s *AuthService) LoginGoogle(c *gin.Context, req model.UserDataGoogle, startTime time.Time) (token string, err error) {
+
+	existsUser := s.userPg.EmailExists(req.Email)
+	if !existsUser {
+		passwordDefaultGoogle := helper.GetEnv("PASSWORD_DEFAULT_GOOGLE")
+		hashPassword, errHash := bcrypt.GenerateFromPassword([]byte(passwordDefaultGoogle), 10)
+		if errHash != nil {
+			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
+			return
+		}
+
+		user := model.Users{
+			Name:      req.Name,
+			Email:     req.Email,
+			Password:  string(hashPassword),
+			CreatedAt: time.Now(),
+		}
+
+		err = s.userPg.Create(&user)
+		if err != nil {
+			helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
+			return
+		}
+	}
+
+	jwtKey := []byte(helper.GetEnv("JWT_KEY"))
+
+	expTime := time.Now().Add(360 * time.Hour)
+	claims := &middleware.JwtClaim{
+		Email: req.Email,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Issuer:    helper.GetEnv("ISSUER"),
+			ExpiresAt: jwt.NewNumericDate(expTime),
+		},
+	}
+
+	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	token, err = tokenAlgo.SignedString(jwtKey)
+	if err != nil {
+		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.KeyInvalid}, startTime)
+		return
+	}
+
+	return
+}

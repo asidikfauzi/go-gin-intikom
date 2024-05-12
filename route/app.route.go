@@ -30,15 +30,24 @@ func InitPackage() *RouteService {
 func (r *RouteService) InitRouter() {
 	router := gin.Default()
 
+	router.Use(middleware.CorsMiddleware())
+
 	api := router.Group("/api")
 	{
+		auth := api.Group("/auth")
+		{
+			auth.POST("/login", r.AuthController.Login)
+			auth.POST("/register", r.AuthController.Register)
+
+			google := auth.Group("/google")
+			{
+				google.GET("/login", r.AuthController.GoogleLogin)
+				google.GET("/callback", r.AuthController.GoogleCallback)
+			}
+		}
+
 		prefix := api.Group("/v1")
 		{
-			auth := api.Group("/auth")
-			{
-				auth.POST("/login", r.AuthController.Login)
-				auth.POST("/register", r.AuthController.Register)
-			}
 
 			users := prefix.Group("/users")
 			users.Use(middleware.JWTMiddleware())
