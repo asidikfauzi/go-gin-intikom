@@ -2,6 +2,7 @@ package auth
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/log"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -21,6 +22,7 @@ func (a *AuthDomain) Login(c *gin.Context) {
 	)
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Error(err)
 		if errors.As(err, &ve) {
 			out := make(map[string]string, len(ve))
 			for i, fe := range ve {
@@ -36,6 +38,7 @@ func (a *AuthDomain) Login(c *gin.Context) {
 
 	token, err := a.AuthService.Login(c, req, startTime)
 	if err != nil {
+		log.Error(err)
 		return
 	}
 

@@ -1,0 +1,6 @@
+time="2024-05-12T22:14:53+07:00" level=error err="record not found" file="service/auth.service.go:30 @Login"
+time="2024-05-12T22:14:53+07:00" level=error err="record not found" file="controller/auth/login_impl.controller.go:41 @Login"
+{"err":"record not found","file":"service/auth.service.go:30 @Login","level":"error","msg":"","time":"2024-05-12T22:17:29+07:00"}
+{"err":"record not found","file":"controller/auth/login_impl.controller.go:41 @Login","level":"error","msg":"","time":"2024-05-12T22:17:29+07:00"}
+{"err":"crypto/bcrypt: hashedPassword is not the hash of the given password","file":"service/auth.service.go:37 @Login","level":"error","msg":"","time":"2024-05-12T22:17:45+07:00"}
+{"err":"crypto/bcrypt: hashedPassword is not the hash of the given password","file":"controller/auth/login_impl.controller.go:41 @Login","level":"error","msg":"","time":"2024-05-12T22:17:45+07:00"}

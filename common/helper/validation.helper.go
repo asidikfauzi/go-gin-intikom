@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"asidikfauzi/go-gin-intikom/common/log"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -56,11 +57,13 @@ func ErrorPassword(c *gin.Context, field, message string, statusCode int) {
 func ErrorValidatingPassword(c *gin.Context, password, confirmPassword string) bool {
 	err := ValidatePassword(password)
 	if err != nil {
+		log.Error(err)
 		ErrorPassword(c, "password", err.Error(), http.StatusUnprocessableEntity)
 		return false
 	}
 
 	if password != confirmPassword {
+		log.Error(err)
 		ErrorPassword(c, "password", "Password does not match", http.StatusUnprocessableEntity)
 		return false
 	}

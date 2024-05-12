@@ -2,6 +2,7 @@ package service
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/log"
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
@@ -31,6 +32,7 @@ func (s *UserService) GetUsers(c *gin.Context, param model.ParamPaginate, startT
 	var totalData int64
 	users, totalData, err = s.userPg.GetAll(param)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -54,6 +56,7 @@ func (s *UserService) ShowUser(c *gin.Context, id int, startTime time.Time) (use
 
 	getUser, err := s.userPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -73,12 +76,14 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 
 	getUser, err := s.userPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
 
 	var ve validator.ValidationErrors
 	if err = c.ShouldBindJSON(&req); err != nil {
+		log.Error(err)
 		if errors.As(err, &ve) {
 			out := make(map[string]string, len(ve))
 			for i, fe := range ve {
@@ -98,6 +103,7 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 	if req.Password != "" && req.OldPassword != "" {
 		err = bcrypt.CompareHashAndPassword([]byte(getUser.Password), []byte(req.OldPassword))
 		if err != nil {
+			log.Error(err)
 			helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.PasswordIncorrect}, startTime)
 			return
 		}
@@ -109,6 +115,7 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 
 		hashPassword, errHash := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 		if errHash != nil {
+			log.Error(errHash)
 			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: errHash.Error()}, startTime)
 			return
 		}
@@ -130,6 +137,7 @@ func (s *UserService) UpdateUser(c *gin.Context, id int, startTime time.Time) (m
 
 	err = s.userPg.Update(user)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -144,6 +152,7 @@ func (s *UserService) DeleteUser(c *gin.Context, id int, startTime time.Time) (m
 
 	getUser, err := s.userPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -154,6 +163,7 @@ func (s *UserService) DeleteUser(c *gin.Context, id int, startTime time.Time) (m
 
 	err = s.userPg.Delete(user)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}

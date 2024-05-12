@@ -2,6 +2,7 @@ package service
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/log"
 	"asidikfauzi/go-gin-intikom/common/middleware"
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
@@ -26,12 +27,14 @@ func NewAuthService(up domain.UserPostgres) domain.AuthService {
 func (s *AuthService) Login(c *gin.Context, req model.ReqLogin, startTime time.Time) (token string, err error) {
 	user, err := s.userPg.FindByEmail(req.Email)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.PasswordIncorrect}, startTime)
 		return
 	}
@@ -51,6 +54,7 @@ func (s *AuthService) Login(c *gin.Context, req model.ReqLogin, startTime time.T
 
 	token, err = tokenAlgo.SignedString(jwtKey)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.KeyInvalid}, startTime)
 		return
 	}
@@ -71,6 +75,7 @@ func (s *AuthService) Register(c *gin.Context, req model.ReqUser, startTime time
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), 10)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -84,6 +89,7 @@ func (s *AuthService) Register(c *gin.Context, req model.ReqUser, startTime time
 
 	err = s.userPg.Create(&user)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -98,6 +104,7 @@ func (s *AuthService) LoginGoogle(c *gin.Context, req model.UserDataGoogle, star
 		passwordDefaultGoogle := helper.GetEnv("PASSWORD_DEFAULT_GOOGLE")
 		hashPassword, errHash := bcrypt.GenerateFromPassword([]byte(passwordDefaultGoogle), 10)
 		if errHash != nil {
+			log.Error(err)
 			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
 			return
 		}
@@ -111,6 +118,7 @@ func (s *AuthService) LoginGoogle(c *gin.Context, req model.UserDataGoogle, star
 
 		err = s.userPg.Create(&user)
 		if err != nil {
+			log.Error(err)
 			helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 			return
 		}
@@ -131,6 +139,7 @@ func (s *AuthService) LoginGoogle(c *gin.Context, req model.UserDataGoogle, star
 
 	token, err = tokenAlgo.SignedString(jwtKey)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.KeyInvalid}, startTime)
 		return
 	}

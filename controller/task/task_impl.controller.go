@@ -2,6 +2,7 @@ package task
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/log"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
 	"github.com/gin-gonic/gin"
@@ -29,6 +30,7 @@ func (u *TaskDomain) GetTasks(c *gin.Context) {
 	if page := c.Query("page"); page != "" {
 		pageInt, err := strconv.Atoi(page)
 		if err != nil {
+			log.Error(err)
 			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
 			return
 		}
@@ -38,6 +40,7 @@ func (u *TaskDomain) GetTasks(c *gin.Context) {
 	if limit := c.Query("limit"); limit != "" {
 		limitInt, err := strconv.Atoi(limit)
 		if err != nil {
+			log.Error(err)
 			helper.ResponseAPI(c, false, http.StatusBadRequest, http.StatusText(http.StatusBadRequest), map[string]interface{}{helper.Error: err.Error()}, startTime)
 			return
 		}
@@ -52,6 +55,7 @@ func (u *TaskDomain) GetTasks(c *gin.Context) {
 
 	tasks, paginate, err := u.TaskService.GetTasks(c, queryParams, startTime)
 	if err != nil {
+		log.Error(err)
 		return
 	}
 

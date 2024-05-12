@@ -2,6 +2,7 @@ package service
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/log"
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
 	"errors"
@@ -33,6 +34,7 @@ func (s *TaskService) GetTasks(c *gin.Context, param model.ParamPaginate, startT
 	var totalData int64
 	tasks, totalData, err = s.taskPg.GetAll(param)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -56,12 +58,14 @@ func (s *TaskService) ShowTask(c *gin.Context, id int, startTime time.Time) (tas
 
 	getTask, err := s.taskPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
 
 	getUser, err := s.userPg.FindById(int(getTask.UserID))
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -95,6 +99,7 @@ func (s *TaskService) CreateTask(c *gin.Context, req model.ReqTask, startTime ti
 
 	_, err = s.userPg.FindById(int(req.UserID))
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -109,6 +114,7 @@ func (s *TaskService) CreateTask(c *gin.Context, req model.ReqTask, startTime ti
 
 	err = s.taskPg.Create(&task)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -124,18 +130,21 @@ func (s *TaskService) UpdateTask(c *gin.Context, id int, startTime time.Time) (m
 
 	getTask, err := s.taskPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: "Task " + err.Error()}, startTime)
 		return
 	}
 
 	_, err = s.userPg.FindById(int(getTask.UserID))
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: "User " + err.Error()}, startTime)
 		return
 	}
 
 	var ve validator.ValidationErrors
 	if err = c.ShouldBindJSON(&req); err != nil {
+		log.Error(err)
 		if errors.As(err, &ve) {
 			out := make(map[string]string, len(ve))
 			for i, fe := range ve {
@@ -174,6 +183,7 @@ func (s *TaskService) UpdateTask(c *gin.Context, id int, startTime time.Time) (m
 
 	err = s.taskPg.Update(task)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -188,6 +198,7 @@ func (s *TaskService) DeleteTask(c *gin.Context, id int, startTime time.Time) (m
 
 	getTask, err := s.taskPg.FindById(id)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusNotFound, http.StatusText(http.StatusNotFound), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
@@ -198,6 +209,7 @@ func (s *TaskService) DeleteTask(c *gin.Context, id int, startTime time.Time) (m
 
 	err = s.taskPg.Delete(task)
 	if err != nil {
+		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusInternalServerError, http.StatusText(http.StatusInternalServerError), map[string]interface{}{helper.Error: err.Error()}, startTime)
 		return
 	}
