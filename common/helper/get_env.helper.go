@@ -7,10 +7,17 @@ import (
 
 func GetEnv(key string) string {
 	var appConfig map[string]string
-	appConfig, err := godotenv.Read()
+	var err error
+	appConfig, err = godotenv.Read()
 
 	if err != nil {
 		fmt.Println("Error reading .env file")
 	}
-	return appConfig[key]
+
+	value, ok := appConfig[key]
+	if !ok {
+		fmt.Printf("Environment variable %s not found\n", key)
+		return ""
+	}
+	return value
 }
