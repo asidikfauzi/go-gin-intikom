@@ -2,13 +2,12 @@ package service
 
 import (
 	"asidikfauzi/go-gin-intikom/common/helper"
+	"asidikfauzi/go-gin-intikom/common/jwt"
 	"asidikfauzi/go-gin-intikom/common/log"
-	"asidikfauzi/go-gin-intikom/common/middleware"
 	"asidikfauzi/go-gin-intikom/domain"
 	"asidikfauzi/go-gin-intikom/model"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
@@ -39,20 +38,7 @@ func (s *AuthService) Login(c *gin.Context, req model.ReqLogin, startTime time.T
 		return
 	}
 
-	jwtKey := []byte(helper.GetEnv("JWT_KEY"))
-
-	expTime := time.Now().Add(360 * time.Hour)
-	claims := &middleware.JwtClaim{
-		Email: user.Email,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    helper.GetEnv("ISSUER"),
-			ExpiresAt: jwt.NewNumericDate(expTime),
-		},
-	}
-
-	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	token, err = tokenAlgo.SignedString(jwtKey)
+	token, err = jwt.GetToken(req.Email)
 	if err != nil {
 		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.KeyInvalid}, startTime)
@@ -124,20 +110,7 @@ func (s *AuthService) LoginGoogle(c *gin.Context, req model.UserDataGoogle, star
 		}
 	}
 
-	jwtKey := []byte(helper.GetEnv("JWT_KEY"))
-
-	expTime := time.Now().Add(360 * time.Hour)
-	claims := &middleware.JwtClaim{
-		Email: req.Email,
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    helper.GetEnv("ISSUER"),
-			ExpiresAt: jwt.NewNumericDate(expTime),
-		},
-	}
-
-	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	token, err = tokenAlgo.SignedString(jwtKey)
+	token, err = jwt.GetToken(req.Email)
 	if err != nil {
 		log.Error(err)
 		helper.ResponseAPI(c, false, http.StatusUnauthorized, http.StatusText(http.StatusUnauthorized), map[string]interface{}{helper.Error: helper.KeyInvalid}, startTime)
