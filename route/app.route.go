@@ -7,6 +7,8 @@ import (
 	"asidikfauzi/go-gin-intikom/controller/task"
 	"asidikfauzi/go-gin-intikom/controller/user"
 	"github.com/gin-gonic/gin"
+	"log"
+	"net/http"
 )
 
 type InitRoutes interface {
@@ -30,7 +32,9 @@ func InitPackage() *RouteService {
 func (r *RouteService) InitRouter() {
 	router := gin.Default()
 
-	router.Use(middleware.CorsMiddleware())
+	router.SetTrustedProxies([]string{"loopback", "link-local", "unspecified"})
+
+	router.Use(middleware.CORSMiddleware())
 
 	api := router.Group("/api")
 	{
@@ -71,9 +75,13 @@ func (r *RouteService) InitRouter() {
 
 	}
 
-	err := router.Run(":" + helper.GetEnv("APP_PORT"))
+	port := helper.GetEnv("APP_PORT")
+	err := router.Run(":" + port)
 	if err != nil {
-		return
+		err = http.ListenAndServe(":8080", router)
+		if err != nil {
+			log.Fatalf("Failed to start server: %v", err)
+		}
 	}
 
 }

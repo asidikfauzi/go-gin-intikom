@@ -1,0 +1,10 @@
+version: "3"
+services:
+  app:
+    image: app:latest
+    container_name: go_gin_intikom_app
+    build:
+      context: .
+      dockerfile: ./cmd/app/dev.Dockerfile
+    volumes:
+      - ./:/app

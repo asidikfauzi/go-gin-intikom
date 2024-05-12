@@ -1,5 +1,19 @@
 version: "3"
 services:
+  app:
+    image: app:latest
+    container_name: go-intikom-app
+    build:
+      context: .
+      dockerfile: ./cmd/app/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./log:/log
+    depends_on:
+      postgres:
+        condition: service_started
+    restart: on-failure
   postgres:
     image: postgres:latest
     container_name: postgres_intikom
