@@ -10,3 +10,13 @@ time="2024-05-12T22:14:53+07:00" level=error err="record not found" file="contro
 {"err":"crypto/bcrypt: hashedPassword is not the hash of the given password","file":"controller/auth/login_impl.controller.go:41 @Login","level":"error","msg":"","time":"2024-05-12T23:38:33+07:00"}
 {"err":"crypto/bcrypt: hashedPassword is not the hash of the given password","file":"/app/service/auth.service.go:37 @Login","level":"error","msg":"","time":"2024-05-13T00:57:33+07:00"}
 {"err":"crypto/bcrypt: hashedPassword is not the hash of the given password","file":"/app/controller/auth/login_impl.controller.go:41 @Login","level":"error","msg":"","time":"2024-05-13T00:57:33+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:32+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:36+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:36+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:37+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:37+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:37+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:38+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:38+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:39+07:00"}
+{"err":"oauth2: \"invalid_grant\" \"Bad Request\"","file":"/app/controller/auth/oauth2_impl.controller.go:39 @GoogleCallback","level":"error","msg":"","time":"2024-05-13T01:58:39+07:00"}

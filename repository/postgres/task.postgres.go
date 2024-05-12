@@ -24,6 +24,10 @@ func (u *Task) GetAll(param model.ParamPaginate) (tasks []model.GetTask, count i
 		Where("deleted_at IS NULL").
 		Where("(title ILIKE ? OR description ILIKE ? OR status ILIKE ?)", "%"+param.Search+"%", "%"+param.Search+"%", "%"+param.Search+"%")
 
+	if err = query.Count(&count).Error; err != nil {
+		return
+	}
+
 	if param.Limit > 0 {
 		query = query.Limit(param.Limit)
 	}
@@ -31,10 +35,6 @@ func (u *Task) GetAll(param model.ParamPaginate) (tasks []model.GetTask, count i
 	if err = query.Offset(param.Offset).
 		Order(param.OrderBy + " " + param.Direction).
 		Find(&tasks).Error; err != nil {
-		return
-	}
-
-	if err = query.Count(&count).Error; err != nil {
 		return
 	}
 

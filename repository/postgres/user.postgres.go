@@ -22,6 +22,10 @@ func (u *User) GetAll(param model.ParamPaginate) (users []model.GetUser, count i
 		Where("deleted_at IS NULL").
 		Where("(name ILIKE ? OR email ILIKE ?)", "%"+param.Search+"%", "%"+param.Search+"%")
 
+	if err = query.Count(&count).Error; err != nil {
+		return
+	}
+
 	if param.Limit > 0 {
 		query = query.Limit(param.Limit)
 	}
@@ -29,10 +33,6 @@ func (u *User) GetAll(param model.ParamPaginate) (users []model.GetUser, count i
 	if err = query.Offset(param.Offset).
 		Order(param.OrderBy + " " + param.Direction).
 		Find(&users).Error; err != nil {
-		return
-	}
-
-	if err = query.Count(&count).Error; err != nil {
 		return
 	}
 
